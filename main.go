@@ -1,28 +1,39 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"math/rand"
+	"os"
+	"strconv"
 	"time"
 )
 
 func main() {
-	// Generate a random number between 1 and 100
+	// Seed the random number generator once at the beginning
 	rand.Seed(time.Now().UnixNano())
 	secretNumber := rand.Intn(100) + 1
 
 	fmt.Println("Welcome to the Guessing Game!")
 	fmt.Println("I've picked a number between 1 and 100. Can you guess it?")
 
-	var guess int
+	reader := bufio.NewReader(os.Stdin)
 	numGuesses := 0
 
 	for {
 		fmt.Print("Enter your guess: ")
-		_, err := fmt.Scanf("%d", &guess)
-
+		input, err := reader.ReadString('\n')
 		if err != nil {
-			fmt.Println("Invalid input. Please enter a valid number.")
+			fmt.Println("Error reading input:", err)
+			continue
+		}
+
+		// Remove newline from input
+		input = input[:len(input)-1]
+
+		guess, err := strconv.Atoi(input)
+		if err != nil || guess < 1 || guess > 100 {
+			fmt.Println("Invalid input. Please enter a number between 1 and 100.")
 			continue
 		}
 
